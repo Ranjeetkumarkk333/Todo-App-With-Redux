@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import Header from './Header';
 import Container from './Container';
 import H1 from './H1';
@@ -6,55 +6,50 @@ import H3 from './H3';
 import TodoForm from './TodoForm';
 import Button from './Button';
 import TodoRow from './TodoRow';
+import {TODO_ADDED, TODO_MARKED_DONE, TODO_MARKED_UNDONE} from './Data'
+import { useDispatch, useSelector } from 'react-redux';
+import {uniqueId} from 'lodash'
+import { completedSelect, incompletedSelect } from './Selectors';
 
-let i = localStorage.getItem('id_index') || 0;
+type todotyoe ={title:string, id:string, done: boolean}
 
 function TodoPage() {
+  const [values, setValues] = React.useState({
+    todoTitle:"",
+    todoFormVisible:false
+  });
+ 
+  const dispatch = useDispatch();
+  const Id = uniqueId();
+
+  const addTodo = () => {
+    const todoData={id: Id, title: values.todoTitle, done: false} 
+      dispatch( { type: TODO_ADDED, payload:todoData})
+      setValues({ todoTitle:"", todoFormVisible:false});
   
-  const [todoFormVisible, setTodoFormVisiblity] = React.useState(false);
+    };
+  
+  const showTodoForm = () => setValues({...values, todoFormVisible:true});
+  const hideTodoForm = () =>setValues({ ...values, todoFormVisible:false});
 
-  const savedTodoList = JSON.parse(localStorage.getItem('todolist')) || [];
-
-  console.log('i', i);
-
-  const [todoList, setTodoList] = React.useState(savedTodoList);
-
-
-  const updateTodoList = (todoList) => {
-    setTodoList(todoList);
-
-    localStorage.setItem('todolist', JSON.stringify(todoList));
-  }
-
-  const completeTodoList = todoList.filter(t => t.done);
-  const incompleteTodoList = todoList.filter(t => !t.done);
-
-  const showTodoForm = () => setTodoFormVisiblity(true);
-
-  const hideTodoForm = () => setTodoFormVisiblity(false);
-
-  const addTodo = (todoTitle) => {
-    localStorage.setItem('id_index', ++i);
+  const incompleteTodoList =useSelector(incompletedSelect);
+  const completeTodoList =useSelector(completedSelect);
+ 
+  const markAsDone = (id:number) => {
+    console.log("id", id)
+      dispatch( { type: TODO_MARKED_DONE, payload:id})
+    }
+    const markAsNotDone = (id:number) => {
     
-    updateTodoList([...todoList, {id: i, title: todoTitle, done: false}]);
-  }
-
-  const onTodoDelete = (todo) => {
-    const newTodoList = todoList.filter(t => t.id !== todo.id);
-    updateTodoList(newTodoList);
-  }
-
-  const markAsDone = (todo) => {
-    todo.done = true;
-
-    updateTodoList([...todoList]);
-  };
-
-  const markAsNotDone = (todo) => {
-    todo.done = false;
-
-    updateTodoList([...todoList]);
-  };
+      dispatch( { type: TODO_MARKED_UNDONE, payload:id})
+    }
+  
+    console.log("incompleteTodoList", incompleteTodoList)
+    console.log("completeTodoList", completeTodoList)
+  
+    const onInputChange = (event:ChangeEvent<HTMLInputElement>) => {
+      setValues({...values, todoTitle:event.target.value});
+    }
   
   return (
     <>
@@ -65,15 +60,15 @@ function TodoPage() {
 
         {!incompleteTodoList.length && <div>No todos here!</div>}
         
-        {incompleteTodoList.map(t => <TodoRow todo={t} onStatusChange={markAsDone} key={t.id} onDelete={onTodoDelete}></TodoRow>)}
+        {incompleteTodoList.map(t => <TodoRow todo={t} onStatusChange={markAsDone} key={t.id} ></TodoRow>)}
         
-        {!todoFormVisible && <Button onClick={showTodoForm} theme="highlight" icon="+">Add a todo</Button>}
+        {!values.todoFormVisible && <Button onClick={showTodoForm} theme="highlight" icon="+">Add a todo</Button>}
         
-        {todoFormVisible && <TodoForm onClose={hideTodoForm} onCreate={addTodo} />}
+        {values.todoFormVisible && <TodoForm value={values.todoTitle} onChange={onInputChange} onClose={hideTodoForm} onCreate={addTodo} />}
 
         {!completeTodoList.length && <div>No todos here!</div>}
         
-        {completeTodoList.map(t => <TodoRow todo={t} onStatusChange={markAsNotDone} key={t.id} onDelete={onTodoDelete}></TodoRow>)}
+        {completeTodoList.map(t => <TodoRow todo={t} onStatusChange={markAsNotDone} key={t.id}></TodoRow>)}
         
       </Container>
     </>
