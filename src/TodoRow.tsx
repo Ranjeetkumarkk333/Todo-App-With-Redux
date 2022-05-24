@@ -1,22 +1,23 @@
 import React, { InputHTMLAttributes } from 'react';
 import Checkbox from './Checkbox';
+import { todoType } from './Models/todo';
 // import { RiDeleteBin6Fill } from 'react-icons/ri';
+
 type Props = {
-  todo:{title:string, done:boolean, id:number},
+  todo:todoType,
   onStatusChange:Function,
 }
-function TodoRow(props:Props) {
+function TodoRow({todo, onStatusChange}:Props) {
 
   const onCheckboxChange = () => {
-    props.onStatusChange(props.todo.id);
+    onStatusChange(todo.id);
   }
 
-  console.log("prop", props)
   
   return (
-    <div className="flex items-center">
-      <Checkbox checked={props.todo.done} onChange={onCheckboxChange} />
-      <span className={"mr-3 ml-3 font-medium text-gray-700 text-sm " + (props.todo.done && 'line-through')}>{props.todo.title}</span>
+    <div className="flex items-center" onClick={onCheckboxChange}>
+      <Checkbox checked={todo.done}  />
+      <span className={"mr-1 ml-2 font-medium text-gray-700 text-sm " + (todo.done && 'line-through')}>{todo.title}</span>
     </div>
   );
 }
