@@ -1,5 +1,5 @@
 import {createStore, Reducer} from 'redux'
-import {TODO_ADDED, STATUS_CHANGE} from './Data'
+import {TODO_ADDED, STATUS_CHANGE} from './Actions/Data'
 import {todoType, State} from './Models/todo'
 
 
@@ -31,6 +31,8 @@ switch(action.type){
 }
 return currentState;
 }
-const store = createStore(reducer);
+const store = createStore(reducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+    );
 
 export default store;

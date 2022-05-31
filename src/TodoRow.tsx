@@ -16,7 +16,7 @@ function TodoRow({todo, onStatusChange}:Props) {
   
   return (
     <div className="flex items-center" onClick={onCheckboxChange}>
-      <Checkbox checked={todo.done}  />
+      <Checkbox checked={todo.done} />
       <span className={"mr-1 ml-2 font-medium text-gray-700 text-sm " + (todo.done && 'line-through')}>{todo.title}</span>
     </div>
   );

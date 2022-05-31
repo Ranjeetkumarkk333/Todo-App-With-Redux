@@ -1,27 +1,51 @@
-import React, { ChangeEvent } from 'react';
+import React, { ChangeEvent, FC } from 'react';
 import Card from './Card';
 import H3 from './H3';
 import Input from './Input';
 import Button from './Button';
+import { uniqueId } from 'lodash';
+import { connect} from 'react-redux';
+import { addTodo } from './Actions/Data';
+import { todoType } from './Models/todo';
 
-function TodoForm(props:any) {
+type Props = { 
+  onSubmit:(todo:todoType)=>void
+};
 
- 
+const TodoForm:FC<Props> = ({onSubmit})=> {
 
-  
-  
+  const [values, setValues] = React.useState({
+    todoTitle:"",
+    todoFormVisible:false
+  });
+  const Id = +uniqueId();
+  const handleSubmit = () => {
+    const todoData={id: Id, title: values.todoTitle, done: false} 
+       onSubmit(todoData);
+      setValues({ todoTitle:"", todoFormVisible:false});
+    };
+  const showTodoForm = () => setValues({...values, todoFormVisible:true});
+  const hideTodoForm = () =>setValues({ ...values, todoFormVisible:false});
+
+    const onInputChange = (event:ChangeEvent<HTMLInputElement>) => {
+      setValues({...values, todoTitle:event.target.value});
+    };
+
   return (
-    <Card>
+    <>
+    {!values.todoFormVisible && <Button onClick={showTodoForm} theme="highlight" icon="+">Add a todo</Button>}
+    {values.todoFormVisible && <Card>
       <H3>Create a todo</H3>
       <div className="mt-4 w-80 mb-4">
-       <Input value={props.Value} onChange={props.onChange} placeholder="Your todo text" />
+       <Input value={values.todoTitle} onChange={onInputChange} placeholder="Your todo text" />
       </div>
       <div className="space-x-4">
-       <Button disabled={!props.value} onClick={props.onCreate}>Save</Button>
-       <Button onClick={props.onClose} theme="secondary">Cancel</Button>
+       <Button disabled={!values.todoTitle} onClick={handleSubmit}>Save</Button>
+       <Button onClick={hideTodoForm} theme="secondary">Cancel</Button>
       </div>
-    </Card>
+    </Card>}
+    </>
   );
 }
 
-export default TodoForm;
+export default connect(undefined, {onSubmit: addTodo})(TodoForm);
