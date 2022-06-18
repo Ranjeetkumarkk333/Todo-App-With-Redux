@@ -5,11 +5,11 @@ import Input from './Input';
 import Button from './Button';
 import { uniqueId } from 'lodash';
 import { connect} from 'react-redux';
-import { addTodo } from './Actions/Data';
-import { todoType } from './Models/todo';
+import { addTodo } from './Actions/todos';
+import { Todo } from './Models/todo';
 
 type Props = { 
-  onSubmit:(todo:todoType)=>void
+  onSubmit:(todo:Todo)=>void
 };
 
 const TodoForm:FC<Props> = ({onSubmit})=> {

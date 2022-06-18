@@ -1,18 +1,19 @@
 import { FC, memo } from "react";
 import TodoRow from "./TodoRow";
-import {State, todoType} from './Models/todo'
-import { completedSelector, incompletedSelector } from "./Selectors";
+import {Todo} from './Models/todo'
+import {completeTodoSelector, incompleteTodoSelector } from "./Selectors/todos";
 import { connect} from "react-redux";
-import { StatusChange} from "./Actions/Data";
+import { StatusChange} from "./Actions/todos";
+import { State } from "./store";
 
-type Props = {todos:todoType[], onStatusChange:(id:number)=>void}
+type Props = {todos:Todo[], onStatusChange:(id:number, done:boolean)=>void}
 
 const TodoList:FC<Props> = ({todos, onStatusChange}) => {
    
   return (
   <div>
       {!todos.length && <p className="text-gray-500">No todos here!</p>}
-      {todos.map(t=><TodoRow todo={t} key={t.id} onStatusChange={()=>onStatusChange(t.id)}></TodoRow>)  }
+      {todos.map(t=><TodoRow todo={t} key={t.id} onStatusChange={onStatusChange}></TodoRow>)  }
   </div>
   )
   
@@ -21,11 +22,11 @@ const TodoList:FC<Props> = ({todos, onStatusChange}) => {
 export default memo(TodoList);
 
 const incompleteMapper =(s:State)=>{
-    return {todos: incompletedSelector(s)}
+    return {todos: incompleteTodoSelector(s)}
 };
 
 const completeMapper=(s:State)=>{
-    return {todos: completedSelector(s)}
+    return {todos: completeTodoSelector(s)}
 };
 
 const dispatchMapper = {onStatusChange:StatusChange }

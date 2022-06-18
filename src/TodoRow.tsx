@@ -1,16 +1,16 @@
 import React, { InputHTMLAttributes } from 'react';
 import Checkbox from './Checkbox';
-import { todoType } from './Models/todo';
+import { Todo } from './Models/todo';
 // import { RiDeleteBin6Fill } from 'react-icons/ri';
 
 type Props = {
-  todo:todoType,
+  todo:Todo,
   onStatusChange:Function,
 }
 function TodoRow({todo, onStatusChange}:Props) {
 
   const onCheckboxChange = () => {
-    onStatusChange(todo.id);
+    onStatusChange(todo.id, !todo.done);
   }
 
   

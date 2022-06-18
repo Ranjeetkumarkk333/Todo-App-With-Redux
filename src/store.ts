@@ -1,10 +1,19 @@
 import {createStore, Reducer} from 'redux'
-import {TODO_ADDED, STATUS_CHANGE} from './Actions/Data'
-import {todoType, State} from './Models/todo'
-
+import {TODO_ADDED, STATUS_CHANGE} from './Actions/todos'
+import {Todo} from './Models/todo'
+import { User } from './Models/User'
+export type State ={
+    todos:{
+        [id:number]:Todo
+    },
+    users:{
+        [id:number]:User
+    }
+}
 
 const initialState : State= {
-   todos:[]
+   todos:{},
+   users:{}
 }
 
 const reducer: Reducer<State> =(currentState = initialState, action)=>{
@@ -12,20 +21,14 @@ const reducer: Reducer<State> =(currentState = initialState, action)=>{
     console.log(currentState, action);
 switch(action.type){
     case TODO_ADDED:{
-        const newTodos:todoType[] = [...currentState.todos, action.payload]
-        return {...currentState, todos:newTodos}
+        const todo:Todo = action.payload
+        return {...currentState, todos:{...currentState.todos, [todo.id]:todo}}
     }
     case STATUS_CHANGE:{
-        console.log("action.payload", action.payload)
-     const todoDone = currentState.todos.map(t=> {
-         if(t.id==action.payload){
-            console.log("action.payload1", action.payload)
-             return {...t, done:!t.done}
-         }
-         return t;
-    });
+       const {id, done} = action.payload
+     
     return {
-        ...currentState, ...currentState.todos, todos:todoDone
+        ...currentState, todos:{...currentState.todos, [id]:{...currentState.todos[id], done}}
     }
 }
 }

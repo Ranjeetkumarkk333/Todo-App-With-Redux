@@ -1,5 +1,3 @@
-export type todoType = {title:string, id:number, done: boolean};
-
-export type State = {
-    todos:todoType[]
- }
+export type Todo = {
+    title:string, id:number, done: boolean
+};
