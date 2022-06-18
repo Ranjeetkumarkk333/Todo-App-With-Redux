@@ -4,6 +4,7 @@ import { State } from "./store";
 import { User } from "./Models/User";
 import { userSelector } from "./Selectors/users";
 import UserRow from "./UserRow";
+import { fetchStudents } from "./Actions/students";
 
 type Props = {users:User[]}
 
@@ -24,6 +25,6 @@ function Mapper(s: State) {
   return { users: userSelector(s) };
 }
 
+const mapDispatchToProps={grtStudents:fetchStudents}
 
-
-export const UserData= connect(Mapper)(UserList);
+export const UserData= connect(Mapper, mapDispatchToProps)(UserList);

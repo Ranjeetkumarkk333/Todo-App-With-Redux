@@ -12,7 +12,7 @@ function App() {
     <Link className='mr-2 rounded-md p-1' to="/user">User</Link>
     </div>
     <Routes>
-      <Route path="/todo" element={<TodoPage />}/>
+      <Route path="*" element={<TodoPage />}/>
       <Route path="user" element={ <UserPage/>}/>
     </Routes>
       

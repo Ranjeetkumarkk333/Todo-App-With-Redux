@@ -5,7 +5,7 @@ type Props = {
 }
 function UserRow({user}:Props) {
   return (
-    <div className="bg-yellow-500 text-red-500 font-bold p-2 rounded-md">
+    <div className="bg-gray-100 text-red-500 font-bold p-2 rounded-md mb-2">
      #{user.id} {user.name}
     </div>
   );
